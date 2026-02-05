@@ -1,0 +1,35 @@
+'use client'
+
+const TOKEN_KEY = 'typingfest_token'
+
+export function setAuthToken(token: string) {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(TOKEN_KEY, token)
+  }
+}
+
+export function getAuthToken(): string | null {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(TOKEN_KEY)
+  }
+  return null
+}
+
+export function removeAuthToken() {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(TOKEN_KEY)
+  }
+}
+
+export function getAuthHeaders(): HeadersInit {
+  const token = getAuthToken()
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  }
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+  
+  return headers
+}
