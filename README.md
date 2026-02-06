@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TypingFest
 
-## Getting Started
+TypingFest est une application web pour tester votre vitesse de frappe sur des extraits de littérature française.
 
-First, run the development server:
+## 🚀 Démarrage rapide
 
+### Prérequis
+
+- Node.js 18+ 
+- PostgreSQL (pour la production) ou SQLite (pour le développement local)
+
+### Installation
+
+1. Clonez le repository :
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <votre-repo>
+cd typingfest
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Installez les dépendances :
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Configurez les variables d'environnement :
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Éditez `.env` et ajoutez :
+- `DATABASE_URL` : URL de votre base de données PostgreSQL
+- `JWT_SECRET` : Une clé secrète aléatoire pour les tokens JWT
 
-## Learn More
+4. Initialisez la base de données :
+```bash
+# Créer les tables
+npx prisma migrate dev
 
-To learn more about Next.js, take a look at the following resources:
+# Ajouter les épreuves initiales
+npm run db:seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Lancez le serveur de développement :
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-## Deploy on Vercel
+## 📦 Déploiement
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Consultez le fichier [DEPLOY.md](./DEPLOY.md) pour un guide complet de déploiement sur Vercel, Railway ou d'autres plateformes.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Scripts disponibles
+
+- `npm run dev` - Lance le serveur de développement
+- `npm run build` - Build la production
+- `npm run start` - Lance le serveur de production
+- `npm run db:push` - Pousse le schema vers la base de données
+- `npm run db:migrate` - Crée une nouvelle migration
+- `npm run db:seed` - Initialise les données (épreuves)
+
+## 📝 Technologies utilisées
+
+- **Next.js 16** - Framework React
+- **Prisma** - ORM pour la base de données
+- **PostgreSQL** - Base de données
+- **TypeScript** - Typage statique
+- **Tailwind CSS** - Styles
+- **react-hot-toast** - Notifications
+
+## 📄 Licence
+
+MIT

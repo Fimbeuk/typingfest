@@ -41,6 +41,7 @@ export default function TypingArea({ text, onComplete }: TypingAreaProps) {
   const [shake, setShake] = useState(false)
   const inputRef = useRef<HTMLDivElement>(null)
   const cursorRef = useRef<HTMLSpanElement>(null)
+  const completedRef = useRef(false)
 
   // Calculer WPM et CPM en temps réel
   useEffect(() => {
@@ -62,18 +63,35 @@ export default function TypingArea({ text, onComplete }: TypingAreaProps) {
     return () => clearInterval(interval)
   }, [startTime, userInput.length])
 
-  // Vérifier si le texte est complété
+  // Vérifier si le texte est complété (uniquement si le dernier caractère est correct)
   useEffect(() => {
-    if (userInput.length === text.length && startTime !== null) {
-      const durationMs = Date.now() - startTime
-      onComplete({
-        durationMs,
-        mistakes,
-        wpm,
-        cpm,
-      })
+    // Réinitialiser le flag de complétion si on recommence
+    if (userInput.length === 0) {
+      completedRef.current = false
+      return
     }
-  }, [userInput.length, text.length, startTime, mistakes, wpm, cpm, onComplete])
+
+    // Vérifier que le texte est complété et que le dernier caractère est correct
+    if (!completedRef.current && userInput.length === text.length && startTime !== null) {
+      // Vérifier que le texte saisi correspond exactement au texte attendu
+      if (userInput === text) {
+        completedRef.current = true
+        const durationMs = Date.now() - startTime
+        // Calculer WPM et CPM finaux au moment de la complétion
+        const elapsedSeconds = durationMs / 1000
+        const elapsedMinutes = elapsedSeconds / 60
+        const finalWpm = Math.round((userInput.length / 5) / elapsedMinutes)
+        const finalCpm = Math.round(userInput.length / elapsedMinutes)
+        
+        onComplete({
+          durationMs,
+          mistakes,
+          wpm: finalWpm,
+          cpm: finalCpm,
+        })
+      }
+    }
+  }, [userInput, text, startTime, mistakes, onComplete])
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     // Ignorer les touches spéciales (Shift, Ctrl, Alt, etc.)

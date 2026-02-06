@@ -1,8 +1,10 @@
-import Link from 'next/link'
 import { getAllChallenges } from '@/app/actions/challenge'
+import { getLeaderboard } from '@/app/actions/leaderboard'
+import ChallengeCard from '@/app/components/ChallengeCard'
 
 export default async function PlayPage() {
   const challenges = await getAllChallenges()
+  const leaderboard = await getLeaderboard()
 
   const challengeCards = [
     {
@@ -35,20 +37,14 @@ export default async function PlayPage() {
           {challengeCards.map((card) => {
             const challenge = challenges.find((c) => c.slug === card.slug)
             if (!challenge) return null
+            const challengeLeaderboard = leaderboard.byChallenge[challenge.id] || []
             return (
-              <Link
+              <ChallengeCard
                 key={card.slug}
-                href={`/play/${challenge.id}`}
-                className="group"
-              >
-                <div className={`bg-gradient-to-br ${card.color} rounded-lg shadow-lg p-8 text-white transform transition-transform hover:scale-105`}>
-                  <h2 className="text-2xl font-bold mb-2">{card.title}</h2>
-                  <p className="text-white/80 mb-4">{card.author}</p>
-                  <div className="mt-6 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                    Cliquez pour commencer →
-                  </div>
-                </div>
-              </Link>
+                challenge={challenge}
+                card={card}
+                leaderboard={challengeLeaderboard}
+              />
             )
           })}
         </div>

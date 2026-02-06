@@ -21,10 +21,10 @@ export default async function Home() {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">🏆 Top 3 Mondial</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">🏆 Classement Mondial</h2>
           {leaderboard.global.length > 0 ? (
-            <div className="space-y-3">
-              {leaderboard.global.slice(0, 3).map((entry, index) => (
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {leaderboard.global.map((entry, index) => (
                 <div
                   key={entry.user.id}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"

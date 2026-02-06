@@ -41,3 +41,17 @@ export async function saveRun(
     },
   })
 }
+
+export async function getUserBestScore(userId: string, challengeId: string) {
+  const bestRun = await prisma.run.findFirst({
+    where: {
+      userId,
+      challengeId,
+    },
+    orderBy: {
+      wpm: 'desc',
+    },
+  })
+
+  return bestRun ? bestRun.wpm : null
+}

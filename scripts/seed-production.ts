@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -32,8 +31,15 @@ async function main() {
       create: c,
     })
   }
+
+  console.log("✅ Base de données initialisée avec les 3 épreuves !")
 }
 
 main()
-  .then(() => console.log("Base de données initialisée avec les 3 épreuves !"))
-  .finally(() => prisma.$disconnect())
+  .catch((e) => {
+    console.error("❌ Erreur lors de l'initialisation:", e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
