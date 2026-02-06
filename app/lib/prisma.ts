@@ -6,8 +6,6 @@ declare global {
   var prisma: PrismaClient | undefined
 }
 
-let prisma: PrismaClient
-
 // Configuration Prisma
 // Dans Prisma 7, PrismaClient lit automatiquement DATABASE_URL depuis process.env
 // La configuration de la base de données se fait via prisma.config.ts
@@ -17,11 +15,14 @@ const createPrismaClient = () => {
   })
 }
 
+// Initialisation du client Prisma
+// En production, créer une nouvelle instance
+// En développement, utiliser le singleton global pour éviter les connexions multiples
+let prisma: PrismaClient
+
 if (process.env.NODE_ENV === 'production') {
-  // En production, créer une nouvelle instance
   prisma = createPrismaClient()
 } else {
-  // En développement, utiliser le singleton global pour éviter les connexions multiples
   if (!global.prisma) {
     global.prisma = createPrismaClient()
   }
