@@ -7,6 +7,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Note: DATABASE_URL doit être définie dans les variables d'environnement
+  // Pour le build local, vous pouvez créer un fichier .env avec une URL factice
 }
 
 model User {
