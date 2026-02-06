@@ -6,8 +6,31 @@ import ChallengeCard from '@/app/components/ChallengeCard'
 export const dynamic = 'force-dynamic'
 
 export default async function PlayPage() {
-  const challenges = await getAllChallenges()
-  const leaderboard = await getLeaderboard()
+  let challenges
+  let leaderboard
+  
+  try {
+    challenges = await getAllChallenges()
+    leaderboard = await getLeaderboard()
+  } catch (error) {
+    console.error('Erreur lors du chargement des données:', error)
+    // En cas d'erreur, retourner une page d'erreur
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h1 className="text-2xl font-bold text-red-900 mb-2">Erreur de connexion à la base de données</h1>
+            <p className="text-red-700 mb-4">
+              La base de données n'est pas encore initialisée. Veuillez exécuter les migrations.
+            </p>
+            <p className="text-sm text-red-600">
+              Consultez les logs Vercel pour plus de détails.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const challengeCards = [
     {

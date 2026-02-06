@@ -151,22 +151,106 @@ Choisissez l'un de ces services gratuits :
 
 🎉 **Félicitations !** Votre application est maintenant en ligne !
 
-### Étape 4 : Initialiser la base de données
+### Étape 4 : Initialiser la base de données ⚠️ CRUCIAL
 
-Une fois le déploiement terminé :
+**Cette étape est OBLIGATOIRE !** Sans elle, votre application affichera une erreur serveur.
 
-1. Allez dans les paramètres de votre projet Vercel
-2. Ouvrez la console (ou utilisez Vercel CLI)
-3. Exécutez les migrations :
+#### Méthode la plus simple : Initialisation en 2 étapes
+
+**Étape A : Créer les tables (migrations)**
+
+Vous devez d'abord créer les tables. Utilisez Vercel CLI :
+
+1. Installez Vercel CLI :
+   ```bash
+   npm i -g vercel
+   ```
+
+2. Connectez-vous et liez votre projet :
+   ```bash
+   vercel login
+   vercel link
+   ```
+
+3. Téléchargez les variables d'environnement :
+   ```bash
+   vercel env pull .env.local
+   ```
+
+4. Exécutez les migrations :
    ```bash
    npx prisma migrate deploy
    ```
-4. Exécutez le seed pour créer les épreuves :
+
+**Étape B : Ajouter les épreuves (seed)**
+
+Une fois les tables créées, accédez à :
+```
+https://votre-app.vercel.app/api/init-db
+```
+
+Cette route va créer les 3 épreuves initiales.
+
+**⚠️ IMPORTANT** : Après avoir initialisé, **supprimez la route** `app/api/init-db/route.ts` pour des raisons de sécurité.
+
+Votre application devrait maintenant fonctionner !
+
+#### Méthode alternative : Via Vercel CLI
+
+1. Installez Vercel CLI sur votre machine :
    ```bash
-   npm run db:seed
+   npm i -g vercel
    ```
 
-**Note** : Vous pouvez aussi créer un script de build personnalisé dans Vercel pour automatiser cela.
+2. Connectez-vous :
+   ```bash
+   vercel login
+   ```
+
+3. Liez votre projet local au projet Vercel :
+   ```bash
+   cd votre-projet
+   vercel link
+   ```
+   Suivez les instructions pour sélectionner votre projet.
+
+4. Téléchargez les variables d'environnement :
+   ```bash
+   vercel env pull .env.local
+   ```
+
+5. Exécutez les migrations (crée les tables) :
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+6. Initialisez les données (crée les 3 épreuves) :
+   ```bash
+   npm run db:seed:prod
+   ```
+
+#### Méthode 2 : Via un script de post-deploy
+
+Créez un fichier `vercel-build.sh` à la racine :
+
+```bash
+#!/bin/bash
+npx prisma migrate deploy
+npm run db:seed:prod
+```
+
+Puis modifiez `vercel.json` :
+```json
+{
+  "buildCommand": "node scripts/build.js && bash vercel-build.sh"
+}
+```
+
+#### Méthode 3 : Manuellement via une route API temporaire
+
+Créez une route API `/api/init-db` (à supprimer après) pour initialiser la base de données.
+
+**⚠️ IMPORTANT** : Après avoir initialisé la base de données, votre application devrait fonctionner. Si vous voyez toujours une erreur, consultez le fichier `TROUBLESHOOTING.md` pour plus d'aide.
 
 ## Option 2 : Déploiement sur Railway (Tout-en-un)
 

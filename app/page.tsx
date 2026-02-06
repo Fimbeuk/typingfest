@@ -5,7 +5,14 @@ import { getLeaderboard } from '@/app/actions/leaderboard'
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const leaderboard = await getLeaderboard()
+  let leaderboard
+  try {
+    leaderboard = await getLeaderboard()
+  } catch (error) {
+    console.error('Erreur lors du chargement du leaderboard:', error)
+    // En cas d'erreur (base de données non initialisée), afficher une version vide
+    leaderboard = { global: [], byChallenge: {} }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
