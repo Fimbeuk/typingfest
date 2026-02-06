@@ -7,10 +7,33 @@ declare global {
 }
 
 // Configuration Prisma
-// Dans Prisma 7, PrismaClient lit automatiquement DATABASE_URL depuis process.env
-// La configuration de la base de données se fait via prisma.config.ts
+// Dans Prisma 7, on doit passer l'URL via les options du constructeur
+// ou utiliser Prisma Accelerate avec accelerateUrl
 const createPrismaClient = () => {
+  const databaseUrl = process.env.DATABASE_URL
+  
+  if (!databaseUrl) {
+    // Pendant le build, DATABASE_URL peut ne pas être disponible
+    // On retourne un client avec une URL dummy qui ne sera pas utilisé
+    if (process.env.NEXT_PHASE === 'phase-production-build') {
+      return new PrismaClient({
+        datasources: {
+          db: {
+            url: 'postgresql://dummy:dummy@dummy:5432/dummy',
+          },
+        },
+      })
+    }
+    throw new Error('DATABASE_URL is not defined in environment variables')
+  }
+
+  // Pour Prisma 7, on doit passer l'URL via datasources
   return new PrismaClient({
+    datasources: {
+      db: {
+        url: databaseUrl,
+      },
+    },
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
 }
