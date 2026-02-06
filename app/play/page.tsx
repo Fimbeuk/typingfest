@@ -2,6 +2,9 @@ import { getAllChallenges } from '@/app/actions/challenge'
 import { getLeaderboard } from '@/app/actions/leaderboard'
 import ChallengeCard from '@/app/components/ChallengeCard'
 
+// Forcer le rendu dynamique pour éviter les erreurs Prisma pendant le build
+export const dynamic = 'force-dynamic'
+
 export default async function PlayPage() {
   const challenges = await getAllChallenges()
   const leaderboard = await getLeaderboard()

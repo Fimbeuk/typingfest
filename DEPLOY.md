@@ -24,10 +24,59 @@ Ce guide vous explique comment déployer TypingFest en ligne pour que d'autres p
 Choisissez l'un de ces services gratuits :
 
 #### Option A : Neon (Recommandé - gratuit)
-1. Allez sur [neon.tech](https://neon.tech)
-2. Créez un compte gratuit
-3. Créez un nouveau projet
-4. Copiez la `DATABASE_URL` (format: `postgresql://user:password@host/database?sslmode=require`)
+
+**Étape 1 : Accéder au site Neon**
+- Ouvrez votre navigateur et allez sur [https://neon.tech](https://neon.tech)
+- Vous verrez la page d'accueil de Neon
+
+**Étape 2 : Créer un compte**
+- Cliquez sur le bouton **"Sign Up"** ou **"Get Started"** (en haut à droite)
+- Vous avez plusieurs options pour créer un compte :
+  - **Option A** : Cliquez sur **"Sign up with GitHub"** (recommandé si vous avez GitHub)
+    - Vous serez redirigé vers GitHub pour autoriser Neon
+    - Cliquez sur **"Authorize neon"**
+  - **Option B** : Utilisez votre email
+    - Entrez votre adresse email
+    - Cliquez sur **"Continue"**
+    - Vérifiez votre email et cliquez sur le lien de confirmation
+- Une fois connecté, vous arriverez sur le dashboard Neon
+
+**Étape 3 : Créer un nouveau projet**
+- Sur le dashboard, cliquez sur le bouton **"Create Project"** ou **"New Project"**
+- Remplissez le formulaire :
+  - **Project name** : Donnez un nom à votre projet (ex: "typingfest" ou "typingfest-db")
+  - **Region** : Choisissez la région la plus proche de vous (ex: "Europe (Frankfurt)" pour la France)
+  - **PostgreSQL version** : Laissez la version par défaut (généralement 15 ou 16)
+- Cliquez sur **"Create Project"**
+- Attendez quelques secondes que Neon crée votre base de données (cela prend généralement 10-30 secondes)
+
+**Étape 4 : Récupérer la DATABASE_URL**
+- Une fois le projet créé, vous serez sur la page de votre projet
+- Vous verrez une section **"Connection Details"** ou **"Connection string"**
+- Il y aura plusieurs formats disponibles, cherchez celui qui commence par `postgresql://`
+- Cliquez sur le bouton **"Copy"** à côté de la connection string
+- La `DATABASE_URL` ressemblera à ceci :
+  ```
+  postgresql://username:password@ep-xxxx-xxxx.region.aws.neon.tech/dbname?sslmode=require
+  ```
+- **⚠️ IMPORTANT** : Gardez cette URL en sécurité ! Vous en aurez besoin pour Vercel
+
+**Étape 5 : Tester la connexion (optionnel mais recommandé)**
+- Vous pouvez tester que votre base de données fonctionne en cliquant sur **"Open SQL Editor"** dans le dashboard
+- Essayez une requête simple comme : `SELECT 1;`
+- Si cela fonctionne, votre base de données est prête !
+
+**💡 Conseils importants :**
+- **Sauvegardez votre DATABASE_URL** : Copiez-la dans un fichier texte temporaire, vous en aurez besoin pour Vercel
+- **Ne partagez jamais votre DATABASE_URL** : Elle contient vos identifiants de connexion
+- **Plan gratuit** : Neon offre un plan gratuit généreux (0.5 GB de stockage, suffisant pour commencer)
+- **Mot de passe** : Neon génère automatiquement un mot de passe sécurisé, vous n'avez pas besoin de le créer vous-même
+
+**🔍 Où trouver la DATABASE_URL si vous l'avez perdue :**
+1. Retournez sur [neon.tech](https://neon.tech) et connectez-vous
+2. Cliquez sur votre projet dans la liste
+3. Allez dans l'onglet **"Connection Details"** ou **"Settings"**
+4. La connection string sera affichée là-bas
 
 #### Option B : Railway
 1. Allez sur [railway.app](https://railway.app)
@@ -44,14 +93,63 @@ Choisissez l'un de ces services gratuits :
 
 ### Étape 3 : Déployer sur Vercel
 
+**Étape 3.1 : Préparer votre code sur GitHub**
+1. Assurez-vous que votre code est sur GitHub :
+   ```bash
+   git add .
+   git commit -m "Préparation pour le déploiement"
+   git push origin main
+   ```
+
+**Étape 3.2 : Créer un compte Vercel**
 1. Allez sur [vercel.com](https://vercel.com)
-2. Connectez votre compte GitHub
-3. Cliquez sur "Add New Project"
-4. Importez votre repository TypingFest
-5. Configurez les variables d'environnement :
-   - `DATABASE_URL` : La URL de votre base de données PostgreSQL
-   - `JWT_SECRET` : Générez une clé secrète aléatoire (vous pouvez utiliser : `openssl rand -base64 32`)
-6. Cliquez sur "Deploy"
+2. Cliquez sur **"Sign Up"** ou **"Log In"**
+3. Choisissez **"Continue with GitHub"** (recommandé)
+4. Autorisez Vercel à accéder à vos repositories GitHub
+
+**Étape 3.3 : Importer votre projet**
+1. Sur le dashboard Vercel, cliquez sur **"Add New Project"** ou **"New Project"**
+2. Vous verrez la liste de vos repositories GitHub
+3. Trouvez **"typingfest"** (ou le nom de votre repo) et cliquez sur **"Import"**
+
+**Étape 3.4 : Configurer le projet**
+1. Vercel détectera automatiquement que c'est un projet Next.js
+2. **Ne changez rien** dans les paramètres de build (Framework Preset, Build Command, etc.)
+3. **IMPORTANT** : Avant de cliquer sur "Deploy", cliquez sur **"Environment Variables"** ou **"Add Environment Variable"**
+
+**Étape 3.5 : Ajouter les variables d'environnement**
+1. Cliquez sur **"Add New"** pour ajouter une variable
+2. Ajoutez la première variable :
+   - **Name** : `DATABASE_URL`
+   - **Value** : Collez votre `DATABASE_URL` copiée depuis Neon
+   - **Environment** : ⚠️ **IMPORTANT** : Cochez **TOUTES** les cases :
+     - ✅ Production
+     - ✅ Preview  
+     - ✅ Development
+   - Cliquez sur **"Save"**
+3. ⚠️ **Vérification importante** : Assurez-vous que `DATABASE_URL` est bien visible dans la liste des variables d'environnement avant de déployer
+3. Ajoutez la deuxième variable :
+   - **Name** : `JWT_SECRET`
+   - **Value** : Générez une clé secrète aléatoire
+     - Sur Windows (PowerShell) : `[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))`
+     - Sur Mac/Linux : `openssl rand -base64 32`
+     - Ou utilisez un générateur en ligne : [randomkeygen.com](https://randomkeygen.com)
+   - **Environment** : Cochez toutes les cases
+   - Cliquez sur **"Save"**
+4. Vous devriez maintenant voir 2 variables d'environnement configurées
+
+**Étape 3.6 : Déployer**
+1. Cliquez sur le bouton **"Deploy"** en bas de la page
+2. Vercel va maintenant :
+   - Cloner votre repository
+   - Installer les dépendances (`npm install`)
+   - Générer le client Prisma (`prisma generate`)
+   - Builder votre application Next.js
+   - Déployer votre application
+3. Cela prend généralement 2-5 minutes
+4. Une fois terminé, vous verrez **"Congratulations!"** et un lien vers votre application (ex: `typingfest.vercel.app`)
+
+🎉 **Félicitations !** Votre application est maintenant en ligne !
 
 ### Étape 4 : Initialiser la base de données
 

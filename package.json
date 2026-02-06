@@ -14,14 +14,14 @@
     "db:seed:prod": "tsx scripts/seed-production.ts"
   },
   "dependencies": {
-    "@prisma/client": "^7.3.0",
+    "@prisma/client": "^6.19.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pg": "^8.16.0",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.3",
     "next": "16.1.6",
     "pg": "^8.18.0",
-    "prisma": "^7.3.0",
+    "prisma": "^6.19.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0"
