@@ -10,15 +10,13 @@ let prisma: PrismaClient
 
 if (process.env.NODE_ENV === 'production') {
   // En production, créer une nouvelle instance
-  prisma = new PrismaClient({
-    datasourceUrl: process.env.DATABASE_URL,
-  })
+  // Prisma lit automatiquement DATABASE_URL depuis les variables d'environnement
+  prisma = new PrismaClient()
 } else {
   // En développement, utiliser le singleton global pour éviter les connexions multiples
   if (!global.prisma) {
-    global.prisma = new PrismaClient({
-      datasourceUrl: process.env.DATABASE_URL,
-    })
+    // Prisma lit automatiquement DATABASE_URL depuis les variables d'environnement
+    global.prisma = new PrismaClient()
   }
   prisma = global.prisma
 }
